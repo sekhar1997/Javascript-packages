@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
+  </head>
+  <body>
+    <div class="color-picker" id="color-picker"></div>
+    <div id="picker"></div>
+  </body>
+</html>
+<script>
+  var colorPicker = new iro.ColorPicker("#picker", {
+    width: 180,
+    color: "#f2DD6E",
+  });
+  let colorIndicator = document.getElementById("color-picker");
+  colorPicker.on("color:change", function (color) {
+    // log the current color as a HEX string
+    console.log(color.hexString);
+    colorIndicator.style.backgroundColor = color.hexString;
+  });
+</script>
+<style>
+  .color-picker {
+    background-color: red;
+    width: 200px;
+    height: 200px;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 20px;
+  }
+  #picker {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 40px;
+  }
+</style>
