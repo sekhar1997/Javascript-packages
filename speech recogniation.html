@@ -1,0 +1,148 @@
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0;
+        background: #53affc;
+        min-height: 100vh;
+        width: 100%;
+        background-repeat: no-repeat;
+      }
+
+      .container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .mic-icon {
+        cursor: pointer;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        transition: 200ms ease;
+      }
+
+      .mic-icon path {
+        transition: 250ms ease;
+      }
+
+      .mic-icon:hover path {
+        fill: #0044ab;
+      }
+
+      .mic-icon:active {
+        transform: scale(0.9);
+      }
+
+      .mic-icon:active path {
+        fill: #005eeb;
+      }
+
+      #resultElement {
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: normal;
+        color: white;
+      }
+
+      .active-mic path {
+        fill: #005eeb;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <svg
+        id="micIcon"
+        onclick="startSpeaking()"
+        class="mic-icon"
+        width="45"
+        height="45"
+        viewBox="0 0 45 45"
+        fill="none"
+      >
+        <path
+          d="M36.8996 23.2412C36.8996 22.3412 36.2114 21.653 35.3114 21.653C34.4114 21.653 33.7231 22.3412 33.7231 23.2412C33.7231 29.4353 28.6937 34.4647 22.4996 34.4647C16.3055 34.4647 11.2761 29.4353 11.2761 23.2412C11.2761 22.3412 10.5878 21.653 9.68784 21.653C8.78784 21.653 8.09961 22.3412 8.09961 23.2412C8.09961 30.6 13.6055 36.7941 20.9114 37.5882V41.8235H15.1408C14.2408 41.8235 13.5526 42.5118 13.5526 43.4118C13.5526 44.3118 14.2408 45 15.1408 45H29.8584C30.7584 45 31.4467 44.3118 31.4467 43.4118C31.4467 42.5118 30.7584 41.8235 29.8584 41.8235H24.0878V37.5882C31.3937 36.7941 36.8996 30.6 36.8996 23.2412Z"
+          fill="#13314A"
+        />
+        <path
+          d="M22.4994 0C17.6288 0 13.6582 3.97059 13.6582 8.84118V23.1882C13.6582 28.1118 17.6288 32.0294 22.4994 32.0824C27.37 32.0824 31.3406 28.1118 31.3406 23.2412V8.84118C31.3406 3.97059 27.37 0 22.4994 0Z"
+          fill="#13314A"
+        />
+      </svg>
+      <p id="resultElement">Click on the mic.</p>
+    </div>
+  </body>
+  <script>
+    let micIcon = document.getElementById("micIcon");
+    let resultElement = document.getElementById("resultElement");
+    let SpeechRecognition, recognition;
+
+    // json that holds the commands
+    // extend this logic
+    let commands = [
+      {
+        command: "open instagram",
+        action: "openUrl",
+        url: "https://www.instagram.com",
+      },
+      {
+        command: "open facebook",
+        action: "openUrl",
+        url: "https://www.facebook.com",
+      },
+      {
+        command: "open facebook",
+        action: "openUrl",
+        url: "https://www.facebook.com",
+      },
+    ];
+
+    try {
+      SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      // set the lang
+      recognition.lang = "en-US";
+
+      // display the captured test
+      recognition.onresult = (event) => {
+        evaluateCommands(event.results[event.resultIndex][0].transcript);
+      };
+
+      // on start, toggle the mic color
+      recognition.onstart = () => {
+        console.log("hello listening");
+        micIcon.classList.add("active-mic");
+        resultElement.innerHTML = "I'm listening!";
+      };
+      // turn the mic of at the end
+      recognition.onend = () => {
+        micIcon.classList.remove("active-mic");
+      };
+    } catch (e) {
+      resultElement.innerHTML =
+        "Your browser is not supported. Please use Chrome or Edge.";
+    }
+
+    function startSpeaking() {
+      recognition.start();
+    }
+
+    function evaluateCommands(compareWith) {
+      resultElement.innerHTML = compareWith;
+      commands.forEach((element) => {
+        if (element.command.toLowerCase() == compareWith.toLowerCase()) {
+          // command recognized
+          switch (element.action) {
+            case "openUrl":
+              window.open(element.url, "_blank");
+              break;
+          }
+        }
+      });
+    }
+  </script>
+</html>
